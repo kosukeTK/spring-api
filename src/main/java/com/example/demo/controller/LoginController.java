@@ -5,6 +5,9 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +19,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LoginController {
 
+	@GetMapping("/login/saml2/sso/one")
+	public String index(Model model, @AuthenticationPrincipal Saml2AuthenticatedPrincipal principal) {
+		String emailAddress = principal.getFirstAttribute("email");
+		model.addAttribute("emailAddress", emailAddress);
+		model.addAttribute("userAttributes", principal.getAttributes());
+		return "index";
+	}
+	
 	@GetMapping("/fail")
 	public ResponseEntity<Map<String, Object>> home() {
 		Map<String, Object> resultMap = new HashMap<>();
